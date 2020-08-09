@@ -4,8 +4,8 @@ m = Market()
 
 class Portfolio:
     def __init__(self, holdings, cash):
-        self.holdings = holdings
-        self.cash = cash
+        self.holdings = holdings    # List of tuples (name, qty)
+        self.cash = cash            # Integer balance of cash
 
     def buy(self, stock_name, quantity):
         stock = m.get_stock(stock_name)
@@ -18,10 +18,18 @@ class Portfolio:
         return False
 
     def sell(self, stock_name, quantity):
-        print(stock_name, self.holdings)
-        for holding in self.holdings:
+        for x in enumerate(self.holdings):
+            index = x[0]
+            holding = x[1]
             if stock_name in holding:
-                if quantity <= holding[1]:
+                new_quantity = holding[1] - quantity
+                total = m.get_stock(stock_name).price * quantity
+                if new_quantity >= 0:
+                    if (new_quantity == 0):
+                        self.holdings.pop(index)
+                    else:
+                        self.holdings[index] = (stock_name, new_quantity)
+                    self.cash += total
                     return True
         return False
 
